@@ -31,9 +31,9 @@
 			this.components = new System.ComponentModel.Container();
 			this.buttonStart = new System.Windows.Forms.Button();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
-			this.buttonExit = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
+			this.buttonExit = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// buttonStart
@@ -51,17 +51,6 @@
 			// 
 			this.timer1.Interval = 30;
 			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-			// 
-			// buttonExit
-			// 
-			this.buttonExit.Font = new System.Drawing.Font("Segoe Print", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.buttonExit.Location = new System.Drawing.Point(167, 241);
-			this.buttonExit.Name = "buttonExit";
-			this.buttonExit.Size = new System.Drawing.Size(166, 68);
-			this.buttonExit.TabIndex = 1;
-			this.buttonExit.Text = "Exit";
-			this.buttonExit.UseVisualStyleBackColor = true;
-			this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
 			// 
 			// label1
 			// 
@@ -87,6 +76,16 @@
 			this.label2.Text = "label2";
 			this.label2.Visible = false;
 			// 
+			// buttonExit
+			// 
+			this.buttonExit.Font = new System.Drawing.Font("Segoe Print", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.buttonExit.Location = new System.Drawing.Point(167, 241);
+			this.buttonExit.Name = "buttonExit";
+			this.buttonExit.Size = new System.Drawing.Size(166, 68);
+			this.buttonExit.TabIndex = 1;
+			this.buttonExit.Text = "Exit";
+			this.buttonExit.UseVisualStyleBackColor = true;
+			// 
 			// formPingPong
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -96,10 +95,14 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.buttonExit);
 			this.Controls.Add(this.buttonStart);
+			this.KeyPreview = true;
+			this.MaximumSize = new System.Drawing.Size(500, 500);
+			this.MinimumSize = new System.Drawing.Size(500, 500);
 			this.Name = "formPingPong";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Do you wanna play with me? Click on me!";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formPingPong_FormClosing);
+			this.Load += new System.EventHandler(this.formPingPong_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.formPingPong_KeyDown);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormPingPong_MouseMove);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -110,9 +113,9 @@
 
 		private System.Windows.Forms.Button buttonStart;
 		private System.Windows.Forms.Timer timer1;
-		private System.Windows.Forms.Button buttonExit;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Button buttonExit;
 	}
 }
 

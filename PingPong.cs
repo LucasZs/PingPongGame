@@ -32,6 +32,7 @@ namespace PingPongGame
 		static int vBall = 10;
 
 		static int score = 0;
+		static int level = 1;
 
 		public formPingPong()
 		{
@@ -53,7 +54,7 @@ namespace PingPongGame
 		private void DrawGameElements()
 		{
 			graphics = this.CreateGraphics();
-			graphics.Clear(Color.White);
+			graphics.Clear(BackColor);
 			DrawPaddle();
 			DrawBall();
 		}
@@ -98,24 +99,25 @@ namespace PingPongGame
 			if ((xLeftBall + widthBall+exBall >= xLeftRec) && (xLeftBall+exBall <= xLeftRec + widthRec)
 				&& (yTopBall +eyBall<= yTopRec - heightBall) && (yTopBall+eyBall >= yTopRec - heightBall -vBall))
 			{
-				if (xLeftBall + widthBall/2 >= xLeftRec + (int)2.0/3.0*widthRec)
+				if (xLeftBall + widthBall/2 > xLeftRec + (int)2.0/3.0*widthRec)
 				{
 					exBall = new Random().Next(200, 800) / 1000.0;
 				}
-				else if (xLeftBall + widthBall/2 <= xLeftRec + (int)1.0/3.0*widthRec)
+				else if (xLeftBall + widthBall/2 < xLeftRec + (int)1.0/3.0*widthRec)
 				{
 					exBall = - new Random().Next(200, 800) / 1000.0;
 				}
 				eyBall = - Math.Sqrt(1 - exBall * exBall);
 				score += 1;
-				vBall = score/3+10;
+				vBall = score/5 + 10;
+				level = vBall - 9;
 				label1.Text = "Score: " + score;
-				label2.Text = "Level: " + (vBall - 9).ToString();
+				label2.Text = "Level: " + level.ToString() + " (" + score % 5 * 20 + "%)";
 			}
 			else if (((xLeftBall < xLeftRec) || (xLeftBall > xLeftRec + widthRec - widthBall)) && (yTopBall > yTopRec))
 			{
 				timer1.Enabled = false;
-				MessageBox.Show("You are a looser...", "Looser");
+				MessageBox.Show("You are a looser...\nScore: " + score + "\nLevel: " + level, "Looser");
 			}
 
 			DrawGameElements();
@@ -171,18 +173,31 @@ namespace PingPongGame
 
 		private void buttonExit_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show(":P", "No exit");
+			MessageBox.Show(":P");
 		}
 
-		private void formPingPong_FormClosing(object sender, FormClosingEventArgs e)
+		private void formPingPong_KeyDown(object sender, KeyEventArgs e)
 		{
-			var box = MessageBox.Show("Are you sure?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-			if (box == DialogResult.No)
+		
+			if ((timer1.Enabled) && (e.KeyCode == Keys.Space))
 			{
-				e.Cancel = true;
-				return;
+				timer1.Enabled = false;
+				var box = MessageBox.Show("Score: " + score + "\nLevel: " + level, "Pause");
+				if (box == DialogResult.OK)
+				{
+					timer1.Enabled = true;
+				}
 			}
-			MessageBox.Show("Then F*CK YOU!", "F*CK YOU!");
+			else if ((e.KeyCode == Keys.Escape))
+			{
+				timer1.Enabled = false;
+				this.Close();
+			}
+		}
+
+		private void formPingPong_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
