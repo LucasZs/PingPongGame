@@ -26,9 +26,11 @@ namespace PingPongGame
 		int widthBall = 50;
 		int heightBall = 50;
 
-		static double exBall = new Random().NextDouble();
+		static double exBall = new Random().Next(200, 800)/1000.0;
 		static double eyBall = Math.Sqrt(1 - exBall* exBall);
 		static int vBall = 10;
+
+		static int score = 0;
 
 		public formPingPong()
 		{
@@ -64,19 +66,30 @@ namespace PingPongGame
 			buttonExit.Visible = false;
 			DrawGameElements();
 			timer1.Enabled = true;
+			label1.Visible = true;
 		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			xLeftBall += (int) (exBall * vBall);
-			yTopBall += (int)(eyBall * vBall);
+			yTopBall += (int) (eyBall * vBall);
 			if (xLeftBall <= 3 || xLeftBall >= this.Width - widthBall - 20)
 			{
 				exBall *= -1;
 			}
-			if (yTopBall <= 3 || yTopBall >= this.Height - heightBall - 40)
+			else if (yTopBall <= 3)
 			{
 				eyBall *= -1;
+			}
+			else if ((xLeftBall + widthBall >= xLeftRec) && (xLeftBall <= xLeftRec + widthRec)
+				&& (yTopBall <= yTopRec - heightBall) && (yTopBall >= yTopRec - heightBall - 10))
+			{
+				eyBall *= -1;
+			}
+			else if (((xLeftBall <= xLeftRec) || (xLeftBall >= xLeftRec + widthRec - widthBall)) && (yTopBall >= yTopRec))
+			{
+				timer1.Enabled = false;
+				MessageBox.Show("You are a looser...", "Looser");
 			}
 
 			DrawGameElements();
