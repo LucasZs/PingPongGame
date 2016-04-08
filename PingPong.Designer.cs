@@ -71,6 +71,7 @@
 			this.Name = "formPingPong";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Do you wanna play with me? Click on me!";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formPingPong_FormClosing);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormPingPong_MouseMove);
 			this.ResumeLayout(false);
 

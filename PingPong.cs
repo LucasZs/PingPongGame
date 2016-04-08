@@ -12,64 +12,136 @@ namespace PingPongGame
 {
 	public partial class formPingPong : Form
 	{
-		int xRec = 150;
-		int yRec = 400;
-		int widthRec = 200;
-		int height = 20;
+		Graphics graphics;
+		Rectangle paddle;
+		Rectangle ball;
 
-		int xEll = 150;
-		int yEll = 100;
+		int xLeftRec = 150;
+		int yTopRec = 400;
+		int widthRec = 200;
+		int heightRec = 20;
+
+		int xLeftBall = 150;
+		int yTopBall = 100;
+		int widthBall = 50;
+		int heightBall = 50;
+
+		static double exBall = new Random().NextDouble();
+		static double eyBall = Math.Sqrt(1 - exBall* exBall);
+		static int vBall = 10;
 
 		public formPingPong()
 		{
 			InitializeComponent();
 		}
 
-		private void DrawIt(int xRed, int yRec, int xEll, int yEll)
+		private void DrawPaddle()
 		{
-			this.Text = "PING PONG GAME";
-			Graphics g = this.CreateGraphics();
-			g.Clear(Color.White);
-			Rectangle r = new Rectangle(xRec, yRec, 200, 20);
-			Rectangle ball = new Rectangle(xEll, yEll, 80, 80);
+			paddle = new Rectangle(xLeftRec, yTopRec, widthRec, heightRec);
+			graphics.FillRectangle(Brushes.Cyan, paddle);
+			graphics.DrawRectangle(Pens.Red, paddle);
+		}
 
-			g.FillRectangle(Brushes.Cyan, r);
-			g.DrawRectangle(Pens.Red, r);
-			g.FillEllipse(Brushes.Coral, ball);
-			g.DrawEllipse(Pens.BlueViolet, ball);
+		private void DrawBall()
+		{
+			ball = new Rectangle(xLeftBall, yTopBall, widthBall, heightBall);
+			graphics.FillEllipse(Brushes.Coral, ball);
+			graphics.DrawEllipse(Pens.BlueViolet, ball);
+		}
+
+		private void DrawGameElements()
+		{
+			graphics = this.CreateGraphics();
+			graphics.Clear(Color.White);
+			DrawPaddle();
+			DrawBall();
 		}
 
 		private void buttonStart_Click(object sender, EventArgs e)
 		{
-			buttonStart.Hide();
-			buttonExit.Hide();
-			DrawIt(xRec, yRec, xEll, yEll);
+			this.Text = "PING PONG GAME";
+			buttonStart.Visible = false;
+			buttonExit.Visible = false;
+			DrawGameElements();
 			timer1.Enabled = true;
-		}
-
-		private void buttonExit_Click(object sender, EventArgs e)
-		{
-			var box = MessageBox.Show("Are you sure?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-			if (box == DialogResult.No)
-				return;
-			MessageBox.Show("Then F*CK YOU!", "F*CK YOU!");
-			Close();
 		}
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-			yEll += 10;
-			DrawIt(xRec, yRec, xEll, yEll);
+			xLeftBall += (int) (exBall * vBall);
+			yTopBall += (int)(eyBall * vBall);
+			if (xLeftBall <= 3 || xLeftBall >= this.Width - widthBall - 20)
+			{
+				exBall *= -1;
+			}
+			if (yTopBall <= 3 || yTopBall >= this.Height - heightBall - 40)
+			{
+				eyBall *= -1;
+			}
+
+			DrawGameElements();
 		}
 
 		private void FormPingPong_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (e.X <= widthRec / 2)
-				xRec = 0;
-			else if (e.X >= this.Width - widthRec / 2)
-				xRec = this.Width - widthRec;
-			else
-				xRec = e.X - widthRec/2;
+			if (timer1.Enabled)
+			{
+				if (e.X <= widthRec / 2)
+					xLeftRec = 0;
+				else if (e.X >= this.Width - widthRec / 2)
+					xLeftRec = this.Width - widthRec;
+				else
+					xLeftRec = e.X - widthRec / 2;
+			}
+			else BeforeStart(e);
+		}
+
+		private void BeforeStart(MouseEventArgs e)
+		{
+			int xLeftButton = buttonExit.Location.X;
+			int yTopButton = buttonExit.Location.Y;
+			int widthButton = buttonExit.Width;
+			int heightButton = buttonExit.Height;
+			int xRightButton = xLeftButton + widthButton;
+			int yBottomButton = yTopButton + heightButton;
+			int delta = 50;
+
+			if ((e.X <= xLeftButton) && (e.X >= xLeftButton - delta) && (e.Y <= yBottomButton) && (e.Y >= yTopButton))
+			{
+				xLeftButton += 10;
+				buttonExit.Location = new Point(xLeftButton, yTopButton);
+			}
+			else if ((e.X >= xRightButton) && (e.X <= xRightButton + delta) && (e.Y <= yBottomButton) && (e.Y >= yTopButton))
+			{
+				xLeftButton -= 10;
+				buttonExit.Location = new Point(xLeftButton, yTopButton);
+			}
+			else if ((e.Y <= yTopButton) && (e.Y >= yTopButton - delta) && (e.X >= xLeftButton) && (e.X <= xRightButton))
+			{
+				yTopButton += 10;
+				buttonExit.Location = new Point(xLeftButton, yTopButton);
+			}
+			else if ((e.Y >= yBottomButton) && (e.Y <= yBottomButton + delta) && (e.X >= xLeftButton) && (e.X <= xRightButton))
+			{
+				yTopButton -= 10;
+				buttonExit.Location = new Point(xLeftButton, yTopButton);
+			}
+		}
+
+		private void buttonExit_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show(":P", "No exit");
+		}
+
+		private void formPingPong_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			var box = MessageBox.Show("Are you sure?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+			if (box == DialogResult.No)
+			{
+				e.Cancel = true;
+				return;
+			}
+			MessageBox.Show("Then F*CK YOU!", "F*CK YOU!");
 		}
 	}
 }
