@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace PingPongGame
 {
@@ -28,17 +29,26 @@ namespace PingPongGame
 		Rectangle ball;
 
 		static double exBall = new Random().Next(200, 800)/1000.0;
-		static double eyBall = Math.Sqrt(1 - exBall* exBall);
-		static int vBall = 10;
+		static double eyBall = Math.Sqrt(1 - exBall * exBall);
+		static int vBall = 7;
 
 		static int score = 0;
 		static int level = 1;
+		
+		static Image[] gifts = { new Bitmap(@"..\..\gifts\gift1.jpg"),
+								 new Bitmap(@"..\..\gifts\gift2.jpg"),
+								 new Bitmap(@"..\..\gifts\gift3.jpg"),
+								 new Bitmap(@"..\..\gifts\gift4.jpg"),
+								 new Bitmap(@"..\..\gifts\gift5.jpg") };
+
+		SoundPlayer boing = new SoundPlayer(@"..\..\sounds\boing.wav");
+		SoundPlayer looser = new SoundPlayer(@"..\..\sounds\looser.wav");
 
 		public formPingPong()
 		{
 			InitializeComponent();
 		}
-
+		
 		private void DrawPaddle()
 		{
 			graphics.FillRectangle(Brushes.Cyan, paddle);
@@ -56,7 +66,7 @@ namespace PingPongGame
 			graphics = this.CreateGraphics();
 			graphics.Clear(BackColor);
 			DrawPaddle();
-			DrawBall();
+			DrawBall(); 
 		}
 
 		private void buttonStart_Click(object sender, EventArgs e)
@@ -76,8 +86,8 @@ namespace PingPongGame
 			label2.Visible = true;
 			label2.Text = "Level: 1";
 
-			ball = new Rectangle(xLeftBall, yTopBall, widthBall, heightBall);
 			paddle = new Rectangle(xLeftRec, yTopRec, widthRec, heightRec);
+			ball = new Rectangle(xLeftBall, yTopBall, widthBall, heightBall);
 
 			DrawGameElements();
 		}
@@ -88,16 +98,19 @@ namespace PingPongGame
 			ball.X = xLeftBall;
 			yTopBall += (int) (eyBall * vBall);
 			ball.Y = yTopBall;
+			boing.Dispose();
 			if (xLeftBall+exBall <= 3 || xLeftBall +exBall>= this.Width - widthBall - 20)
 			{
 				exBall *= -1;
+				boing.Play();
 			}
 			if (yTopBall +eyBall<= 3)
 			{
 				eyBall *= -1;
+				boing.Play();
 			}
 			if ((xLeftBall + widthBall+exBall >= xLeftRec) && (xLeftBall+exBall <= xLeftRec + widthRec)
-				&& (yTopBall +eyBall<= yTopRec - heightBall) && (yTopBall+eyBall >= yTopRec - heightBall -vBall))
+				&& (yTopBall +eyBall<= yTopRec - heightBall) && (yTopBall+eyBall >= yTopRec - heightBall - vBall))
 			{
 				if (xLeftBall + widthBall/2 > xLeftRec + (int)2.0/3.0*widthRec)
 				{
@@ -107,19 +120,35 @@ namespace PingPongGame
 				{
 					exBall = - new Random().Next(200, 800) / 1000.0;
 				}
+				boing.Play();
 				eyBall = - Math.Sqrt(1 - exBall * exBall);
 				score += 1;
-				vBall = score/5 + 10;
-				level = vBall - 9;
+				vBall += score/5;
+				level = score/5 + 1;
+				if (score%5==0)
+				{
+					Form1 giftswindow=new Form1();
+					giftswindow.BackgroundImage = gifts[level - 2];
+					giftswindow.Show();
+				}
+				
+				if (level==6)
+				{
+					label1.Visible = false;
+					label2.Visible = false;
+					timer1.Enabled = false;
+					MessageBox.Show("You are a really (Code)cool guy, bro!\n Check out your gifts before close", "Congratulation!");
+				}
 				label1.Text = "Score: " + score;
 				label2.Text = "Level: " + level.ToString() + " (" + score % 5 * 20 + "%)";
+				
 			}
 			else if (((xLeftBall < xLeftRec) || (xLeftBall > xLeftRec + widthRec - widthBall)) && (yTopBall > yTopRec))
 			{
 				timer1.Enabled = false;
+				looser.Play();
 				MessageBox.Show("You are a looser...\nScore: " + score + "\nLevel: " + level, "Looser");
 			}
-
 			DrawGameElements();
 		}
 
@@ -193,11 +222,6 @@ namespace PingPongGame
 				timer1.Enabled = false;
 				this.Close();
 			}
-		}
-
-		private void formPingPong_Load(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

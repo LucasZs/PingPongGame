@@ -95,13 +95,15 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.buttonExit);
 			this.Controls.Add(this.buttonStart);
+			this.DoubleBuffered = true;
+			this.ForeColor = System.Drawing.Color.Black;
 			this.KeyPreview = true;
 			this.MaximumSize = new System.Drawing.Size(500, 500);
 			this.MinimumSize = new System.Drawing.Size(500, 500);
 			this.Name = "formPingPong";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Do you wanna play with me? Click on me!";
-			this.Load += new System.EventHandler(this.formPingPong_Load);
+			this.TransparencyKey = System.Drawing.Color.Transparent;
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.formPingPong_KeyDown);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormPingPong_MouseMove);
 			this.ResumeLayout(false);
